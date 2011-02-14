@@ -9,18 +9,18 @@ typedef vector< vector< vector<int> > > V3;
 typedef vector< vector<int> >  V2;
 typedef vector<int>  V1;
 
-
+// sample_function needs zlow to make sense of zindex values
 void sample_function(V3& coeff, int zlow, V2& zindex)
 {
     int t = 0; 
-    cout << "t=";
+    cout << "t = ";
     for (size_t r = 0; r < zindex.size(); ++r)
     {
         for (size_t c = 0; c < zindex[0].size(); ++c)
         {
-            cout << "coeff(" << r << ", " << c << ", " << zindex[r][c] << ")";
+            cout << "coeff(" << r << "," << c << "," << zindex[r][c] << ")";
             if (r < zindex.size()-1 || c < zindex[0].size()-1 )
-                cout << "+";
+                cout << " + ";
             t += coeff[r][c][zindex[r][c]-zlow];
         }
     }
@@ -28,34 +28,32 @@ void sample_function(V3& coeff, int zlow, V2& zindex)
 }
 
 // advance to the "next" the collection of z values
-// advance returns false when we advance the "last" 
-// collection of z values.
+// returns false when we advance the "last" collection of z values.
 bool advance(V2& zindex, int zlow, int zhigh)
 {
     int row = 0;
     int col = 0;
-    bool advanced = false;
-    while (!advanced)
-    {
-        advanced = true;
+    do {
+        // Increment value in the current z slot.
         ++zindex[row][col];
-        if ( zindex[row][col] > zhigh )
+
+        // If the new value does not exceed the maximum allowed z, we are done
+        if ( zindex[row][col] <= zhigh )
+            return true;
+
+        // Otherwise, reset to zlow and move on to the next z slot.
+        zindex[row][col] = zlow;
+        ++col;
+        if (col == zindex[0].size())
         {
-            advanced = false;
-            zindex[row][col] = zlow;
-            ++col;
-            if (col == zindex[0].size())
+            col = 0;
+            ++row;
+            if (row == zindex.size())
             {
-                col = 0;
-                ++row;
-                if (row == zindex.size())
-                {
-                    return false;  // overflow
-                }
+                return false;  // Out of z values to increment
             }
         }
-    }
-    return true;
+    } while (true);
 }
 
 int main(int argc, char** argv)
