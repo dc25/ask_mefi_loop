@@ -58,7 +58,7 @@ bool advance(V2& zindex, int zlow, int zhigh)
 
 int main(int argc, char** argv)
 {
-    int P,U,L;
+    int P,L,U;
     
     std::istringstream i;       
     i.str(string(argv[1]));
