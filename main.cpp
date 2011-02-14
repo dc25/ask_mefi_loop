@@ -76,8 +76,8 @@ int main(int argc, char** argv)
     cout << "L = " << L << endl;
     cout << "U = " << U << endl;
 
-    // Initialize a coeff array with size: PxPx(U-L+1) (and arbitrary value 0.3 )
-    V3 coeff(P, V2(P, V1(U-L+1, 0.3)));
+    // Initialize a coeff array with size: PxPx(U-L+1) (and arbitrary value 3 )
+    V3 coeff(P, V2(P, V1(U-L+1, 3)));
 
     // Initialize 2d vector, zindex to hold a collection of z values
     // To begin with all values of zindex are equal to L
