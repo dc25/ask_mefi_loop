@@ -27,7 +27,36 @@ void sample_function(V3& coeff, int zlow, V2& zindex)
     cout << endl;
 }
 
-
+// advance to the "next" the collection of z values
+// advance returns false when we advance the "last" 
+// collection of z values.
+bool advance(V2& zindex, int zlow, int zhigh)
+{
+    int row = 0;
+    int col = 0;
+    bool advanced = false;
+    while (!advanced)
+    {
+        advanced = true;
+        ++zindex[row][col];
+        if ( zindex[row][col] > zhigh )
+        {
+            advanced = false;
+            zindex[row][col] = zlow;
+            ++col;
+            if (col == zindex[0].size())
+            {
+                col = 0;
+                ++row;
+                if (row == zindex.size())
+                {
+                    return false;  // overflow
+                }
+            }
+        }
+    }
+    return true;
+}
 
 int main(int argc, char** argv)
 {
@@ -49,39 +78,17 @@ int main(int argc, char** argv)
     cout << "L = " << L << endl;
     cout << "U = " << U << endl;
 
+    // Initialize a coeff array with size: PxPx(U-L+1)
     V3 coeff(P, V2(P, V1(U-L+1)));
 
+    // Initialize 2d vector, zindex to hold a collection of z values
+    // To begin with all values of zindex are equal to L
     V2 zindex(P, V1(P, L) );
 
-    bool overflow = false;
-    while (!overflow)
+    do
     {
         sample_function(coeff, L, zindex);      
-
-        int row = 0;
-        int col = 0;
-        bool advanced = false;
-        while (!advanced  && !overflow)
-        {
-            advanced = true;
-            ++zindex[row][col];
-            if ( zindex[row][col] > U )
-            {
-                advanced = false;
-                zindex[row][col] = L;
-                ++col;
-                if (col == P)
-                {
-                    col = 0;
-                    ++row;
-                    if (row == P)
-                    {
-                        overflow = true;
-                    }
-                }
-            }
-        }
-    }
+    } while (advance(zindex, L, U));  
 
     return 0;
 }
